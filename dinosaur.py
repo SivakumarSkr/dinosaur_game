@@ -8,7 +8,7 @@ class Dinosaur:
         self.width = 50
         self.scale = (self.height, self.width)
         self.init_x = 70
-        self.init_y = 200
+        self.init_y = self.game.ground_y - self.height
         self.x = self.init_x
         self.y = self.init_y
         self.top_point = 100

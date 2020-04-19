@@ -14,12 +14,15 @@ class Game:
     def __init__(self):
         pygame.display.set_caption('Dinosaur Game')
         self.clock = pygame.time.Clock()
-        self.screen_res = [700, 400]
+        self.height = 400
+        self.width = 700
+        self.screen_res = [self.width, self.height]
         self.screen = pygame.display.set_mode(self.screen_res, pygame.HWSURFACE, 32)
         self.white = [222, 222, 222]
+        self.black = [0, 0, 0]
         self.screen.fill(self.white)
         self.font = pygame.font.SysFont("Calibri", 16)
-
+        self.ground_y = 250
         self.end = False
         self.dinosaur = Dinosaur(self)
         while not self.end:
@@ -43,7 +46,11 @@ class Game:
 
     def draw(self):
         self.screen.fill(self.white)
+        self.draw_line()
         self.draw_dinosaur()
+
+    def draw_line(self):
+        pygame.draw.aaline(self.screen, self.black, (0, self.ground_y), (self.width, self.ground_y))
 
     def draw_dinosaur(self):
         keys = pygame.key.get_pressed()
