@@ -64,10 +64,12 @@ class Game:
                 self.dinosaur.move_up()
                 if self.dinosaur.check_reached_top():
                     self.dinosaur.direction = 'down'
+                    self.dinosaur.set_speed_zero()
             if self.dinosaur.direction == 'down':
                 self.dinosaur.move_down()
                 if self.dinosaur.check_reached_down():
                     self.dinosaur.direction = 'up'
+                    self.dinosaur.reset_speed()
                     self.dinosaur.is_jumping = False
         self.dinosaur.update()
 
