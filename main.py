@@ -3,8 +3,10 @@ import sys
 import pygame
 import random
 import math
+import time
 from pygame.locals import *
 
+from objects import Cactus, Bird
 from dinosaur import Dinosaur
 
 pygame.init()
@@ -24,7 +26,12 @@ class Game:
         self.font = pygame.font.SysFont("Calibri", 16)
         self.ground_y = 250
         self.end = False
+        self.obj_speed = 2
         self.dinosaur = Dinosaur(self)
+        self.cactus_group = pygame.sprite.Group()
+        self.collide = False
+        self.object_period = 5
+        self.current_obj = None
         while not self.end:
             self.loop()
 
@@ -48,6 +55,7 @@ class Game:
         self.screen.fill(self.white)
         self.draw_line()
         self.draw_dinosaur()
+        self.draw_objects()
 
     def draw_line(self):
         pygame.draw.aaline(self.screen, self.black, (0, self.ground_y), (self.width, self.ground_y))
@@ -72,6 +80,33 @@ class Game:
                     self.dinosaur.reset_speed()
                     self.dinosaur.is_jumping = False
         self.dinosaur.update()
+
+    def create_object(self):
+        random_number = random.randrange(2)
+        if random_number == 0:
+            collide_object = Cactus(self)
+        else:
+            collide_object = Bird(self)
+        return collide_object
+
+    def init_objects(self):
+        if self.current_obj:
+            if self.current_obj.x > self.get_appear_position():
+                self.current_obj = self.create_object()
+        else:
+            self.current_obj = self.create_object()
+
+    def draw_objects(self):
+        self.init_objects()
+        if self.current_obj.check_collide():
+            self.end = True
+        else:
+            self.current_obj.move()
+        self.current_obj.update()
+
+    @staticmethod
+    def get_appear_position():
+        return 2 * random.randrange(-5, 5)
 
 
 Game()
