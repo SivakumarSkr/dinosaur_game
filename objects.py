@@ -11,15 +11,15 @@ class CollideObject:
         self.dinosaur = self.game.dinosaur
 
     def move(self):
-        print(self.x, self.y)
-        self.x += self.speed
+        self.x -= self.speed
 
     def check_passed(self):
         if self.x + self.width < 0:
             return True
 
     def check_collide(self):
-        if self.x > self.dinosaur.x + self.dinosaur.width:
+        if self.x < self.dinosaur.x + self.dinosaur.width and self.y < self.dinosaur.y + self.dinosaur.height and \
+                self.y + self.height > self.dinosaur.y:
             self.game.collide = True
 
 
@@ -27,7 +27,7 @@ class Cactus(CollideObject):
     def __init__(self, game):
         super().__init__(game)
         self.type = self.select_type()
-        self.height, self.width = [40 + self.type[0] * 10] * 2
+        self.height, self.width = [30 + self.type[0] * 10] * 2
         self.y = game.ground_y - self.height
         self.scale = (self.height, self.width)
         self.pos = (self.x, self.y)
@@ -51,15 +51,15 @@ class Bird(CollideObject):
     def __init__(self, game):
         super().__init__(game)
         self.y = game.ground_y - self.select_x()
-        self.height, self.width = (20, 20)
+        self.height, self.width = (30, 30)
         self.scale = (self.height, self.width)
         self.image = pygame.image.load('bird.png')
         self.bird = self.cactus = pygame.transform.scale(self.image, self.scale)
         self.game.screen.blit(self.bird, (self.x, self.y))
 
     def select_x(self):
-        random_number = random.randrange(3)
-        dino_height_half = self.game.dinosaur.height / 2
+        random_number = random.choice([1, 3])
+        dino_height_half = self.game.dinosaur.height * 3 / 4
         return random_number * dino_height_half
 
     def update(self):

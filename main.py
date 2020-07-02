@@ -26,12 +26,14 @@ class Game:
         self.font = pygame.font.SysFont("Calibri", 16)
         self.ground_y = 250
         self.end = False
-        self.obj_speed = 2
+        self.obj_speed = 2.5
         self.dinosaur = Dinosaur(self)
         self.cactus_group = pygame.sprite.Group()
         self.collide = False
         self.object_period = 5
         self.current_obj = None
+        self.score = 0
+        self.add_speed = 5
         while not self.end:
             self.loop()
 
@@ -82,6 +84,8 @@ class Game:
         self.dinosaur.update()
 
     def create_object(self):
+        self.score += 1
+        self.update_object_speed()
         random_number = random.randrange(2)
         if random_number == 0:
             collide_object = Cactus(self)
@@ -91,14 +95,19 @@ class Game:
 
     def init_objects(self):
         if self.current_obj:
-            if self.current_obj.x > self.get_appear_position():
+            if self.current_obj.x < self.get_appear_position():
                 self.current_obj = self.create_object()
         else:
             self.current_obj = self.create_object()
 
+    def update_object_speed(self):
+        if self.score % self.add_speed == 0:
+            self.obj_speed += 0.3
+
     def draw_objects(self):
         self.init_objects()
-        if self.current_obj.check_collide():
+        self.current_obj.check_collide()
+        if self.collide:
             self.end = True
         else:
             self.current_obj.move()
