@@ -15,7 +15,7 @@ class Dinosaur:
         self.is_jumping = False
         self.init_speed = 5
         self.speed = self.init_speed
-        self.accelerate = 0.1
+        self.accelerate = 0.15
         self.position = (self.x, self.y)
         self.image = pygame.image.load('dinosaur.png')
         self.dino = pygame.transform.scale(self.image, self.scale)

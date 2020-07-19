@@ -6,13 +6,16 @@ import math
 import time
 from pygame.locals import *
 
-from objects import Cactus, Bird
+from objects import Cactus, Bird, Cloud
 from dinosaur import Dinosaur
+from utils import EndGame
 
 pygame.init()
 
 
 class Game:
+    BLACK = (0, 0, 0)
+
     def __init__(self):
         pygame.display.set_caption('Dinosaur Game')
         self.clock = pygame.time.Clock()
@@ -34,6 +37,8 @@ class Game:
         self.current_obj = None
         self.score = 0
         self.add_speed = 5
+        self.current_cloud = None
+
         while not self.end:
             self.loop()
 
@@ -58,9 +63,16 @@ class Game:
         self.draw_line()
         self.draw_dinosaur()
         self.draw_objects()
+        self.draw_cloud()
+        self.print_score()
 
     def draw_line(self):
         pygame.draw.aaline(self.screen, self.black, (0, self.ground_y), (self.width, self.ground_y))
+
+    def print_score(self):
+        font = pygame.font.SysFont(None, 30)
+        text = font.render('Score: ' + str(self.score), True, self.BLACK)
+        self.screen.blit(text, (0, 0))
 
     def draw_dinosaur(self):
         keys = pygame.key.get_pressed()
@@ -84,7 +96,6 @@ class Game:
         self.dinosaur.update()
 
     def create_object(self):
-        self.score += 1
         self.update_object_speed()
         random_number = random.randrange(2)
         if random_number == 0:
@@ -97,6 +108,7 @@ class Game:
         if self.current_obj:
             if self.current_obj.x < self.get_appear_position():
                 self.current_obj = self.create_object()
+                self.score += 1
         else:
             self.current_obj = self.create_object()
 
@@ -113,9 +125,22 @@ class Game:
             self.current_obj.move()
         self.current_obj.update()
 
+    def draw_cloud(self):
+        if self.current_cloud is None:
+            self.current_cloud = Cloud(self)
+        else:
+            if self.current_cloud.check_passed() and random.randint(1, 4) != 1:
+                self.current_cloud = Cloud(self)
+        self.current_cloud.update()
+
     @staticmethod
     def get_appear_position():
         return 2 * random.randrange(-5, 5)
 
 
-Game()
+while True:
+    game = Game()
+    end_game = EndGame(game)
+    if end_game.quit:
+        break
+
